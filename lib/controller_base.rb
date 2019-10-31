@@ -26,6 +26,7 @@ class ControllerBase
     else
       res.status = 302
       res['Location'] = url
+      self.session.store_session(@res)
       @already_built_response = true
     end
   end
@@ -40,6 +41,7 @@ class ControllerBase
       raise "double render"
     else
       res.body = [content]
+      self.session.store_session(@res)
       @already_built_response = true
     end
   end
@@ -53,7 +55,7 @@ class ControllerBase
 
     file = File.open(template, 'r')
     lines = file.read
-    
+
     content = ERB.new("#{lines}").result(binding)
 
     self.render_content(content, 'text/html')
@@ -61,6 +63,7 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    @session ||= Session.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
