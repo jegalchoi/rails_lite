@@ -3,6 +3,7 @@ require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'erb'
 require_relative './session'
+require 'byebug'
 
 class ControllerBase
   attr_reader :req, :res, :params
@@ -11,6 +12,7 @@ class ControllerBase
   def initialize(req, res)
     @req = req
     @res = res
+    debugger
     @already_built_response = false
   end
 
