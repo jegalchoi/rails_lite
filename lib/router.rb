@@ -19,6 +19,8 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
+    controller = ControllerBase.new(req, res, {})
+    controller.invoke_action(@action_name)
   end
 end
 
@@ -59,5 +61,12 @@ class Router
 
   # either throw 404 or call run on a matched route
   def run(req, res)
+    if self.match(req)
+      self.match(req).run(req, res)
+    else
+      res.status = 404
+      res.body = ["no matching routes"]
+    end
+    
   end
 end
