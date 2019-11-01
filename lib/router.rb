@@ -19,7 +19,14 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
-    controller = ControllerBase.new(req, res, {})
+    regex = Regexp.new "#{self.pattern}"
+    match_data = regex.match(req.path)
+    
+    route_params = {}
+    match_data.names.each do |key|
+      route_params[key] = match_data[key]
+    end
+    controller = self.controller_class.new(req, res, route_params)
     controller.invoke_action(@action_name)
   end
 end
@@ -29,6 +36,7 @@ class Router
 
   def initialize
     @routes = []
+    
   end
 
   # simply adds a new route to the list of routes
